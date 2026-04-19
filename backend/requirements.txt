@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pymysql
+sqlalchemy
+python-dotenv
+requests
+pycryptodome
+apscheduler
+python-multipart
