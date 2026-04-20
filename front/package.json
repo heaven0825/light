@@ -3,13 +3,22 @@
   "version": "1.0.0",
   "description": "时光记 - 记住每一个重要日子",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "dev:h5": "uni",
+    "build:h5": "uni build"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-alpha-5000720260416001",
+    "@dcloudio/uni-components": "3.0.0-alpha-5000720260416001",
+    "@dcloudio/uni-h5": "3.0.0-alpha-5000720260416001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-5000720260416001",
+    "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.5.0",
-    "vite": "^5.0.0",
-    "vue": "^3.4.0"
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-5000720260416001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5000720260416001",
+    "sass": "^1.69.0",
+    "vite": "^5.0.0"
   }
 }

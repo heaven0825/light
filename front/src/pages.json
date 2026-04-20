@@ -7,15 +7,15 @@
       }
     },
     {
-      "path": "pages/detail/index",
+      "path": "pages/add/index",
       "style": {
         "navigationBarTitleText": "添加记录"
       }
     },
     {
-      "path": "pages/import/index",
+      "path": "pages/detail/index",
       "style": {
-        "navigationBarTitleText": "批量导入"
+        "navigationBarTitleText": "编辑记录"
       }
     },
     {
@@ -40,26 +40,38 @@
   "globalStyle": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "时光记",
-    "navigationBarBackgroundColor": "#4A90E2",
-    "backgroundColor": "#F5F7FA"
+    "navigationBarBackgroundColor": "#FFB6C1",
+    "backgroundColor": "#FFF8F9"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#4A90E2",
-    "backgroundColor": "#ffffff",
+    "color": "#A0522D",
+    "selectedColor": "#FF69B4",
+    "backgroundColor": "#FFFDFE",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "/static/tab-home.png",
+        "selectedIconPath": "/static/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/add/index",
+        "text": "添加",
+        "iconPath": "/static/tab-add.png",
+        "selectedIconPath": "/static/tab-add-active.png"
       },
       {
         "pagePath": "pages/member/index",
-        "text": "会员"
+        "text": "会员",
+        "iconPath": "/static/tab-member.png",
+        "selectedIconPath": "/static/tab-member-active.png"
       },
       {
         "pagePath": "pages/settings/index",
-        "text": "设置"
+        "text": "设置",
+        "iconPath": "/static/tab-settings.png",
+        "selectedIconPath": "/static/tab-settings-active.png"
       }
     ]
   }

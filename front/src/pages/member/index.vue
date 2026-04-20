@@ -1,9 +1,5 @@
 <template>
   <view class="page">
-    <view class="nav-bar">
-      <text class="nav-title">会员中心</text>
-    </view>
-    
     <view class="content">
       <!-- 当前状态 -->
       <view class="current-vip" v-if="userInfo && userInfo.vip_type > 0">
@@ -123,7 +119,7 @@ export default {
             if (res.confirm) {
               // 模拟支付回调
               await uni.request({
-                url: `http://localhost:8000/api/order/pay/callback?order_no=${order.order_no}`,
+                url: `http://localhost:/api/order/pay/callback?order_no=${order.order_no}`,
                 method: 'POST'
               });
               uni.showToast({ title: '支付成功', icon: 'success' });
@@ -142,33 +138,21 @@ export default {
 <style scoped>
 .page {
   min-height: 100vh;
-  background: #F5F7FA;
-}
-
-.nav-bar {
-  background: linear-gradient(135deg, #4A90E2, #667EE5);
-  color: white;
-  padding: 60rpx 30rpx 120rpx;
-  text-align: center;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  font-weight: 600;
+  background: linear-gradient(180deg, #FFF8F9 0%, #FFF0F5 100%);
 }
 
 .content {
   padding: 24rpx;
-  margin-top: -80rpx;
 }
 
 .current-vip, .free-user {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
+  background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
   border-radius: 20rpx;
   padding: 40rpx;
   text-align: center;
-  color: white;
+  color: #8B4513;
   margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 183, 193, 0.3);
 }
 
 .vip-badge {
@@ -194,7 +178,7 @@ export default {
 }
 
 .free-user {
-  background: linear-gradient(135deg, #52C41A, #73D13D);
+  background: linear-gradient(135deg, #FFE4E8, #FFF0F3);
 }
 
 .free-icon {
@@ -206,11 +190,13 @@ export default {
 .free-text {
   font-size: 32rpx;
   font-weight: 600;
+  color: #A0522D;
 }
 
 .free-hint {
   font-size: 24rpx;
-  opacity: 0.9;
+  color: #A0522D;
+  opacity: 0.8;
   display: block;
   margin-top: 8rpx;
 }
@@ -220,11 +206,13 @@ export default {
   border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .section-title {
   font-size: 32rpx;
   font-weight: 600;
+  color: #5C4033;
   margin-bottom: 24rpx;
 }
 
@@ -234,19 +222,21 @@ export default {
 
 .compare-row {
   display: flex;
-  border-bottom: 1rpx solid #EEE;
+  border-bottom: 1rpx solid #FFE4E8;
   padding: 20rpx 0;
 }
 
 .compare-row.header {
-  background: #F8F9FA;
+  background: #FFF8F9;
   border-radius: 8rpx;
   font-weight: 600;
+  color: #8B4513;
 }
 
 .compare-col {
   flex: 1;
   text-align: center;
+  color: #5C4033;
 }
 
 .buy-section {
@@ -260,17 +250,18 @@ export default {
   border-radius: 20rpx;
   padding: 30rpx;
   position: relative;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .buy-card.recommended {
-  border: 2rpx solid #4A90E2;
+  border: 2rpx solid #FFB6C1;
 }
 
 .recommended-tag {
   position: absolute;
   top: -10rpx;
   right: 20rpx;
-  background: #4A90E2;
+  background: linear-gradient(135deg, #FF69B4, #FFB6C1);
   color: white;
   padding: 4rpx 16rpx;
   border-radius: 20rpx;
@@ -284,6 +275,7 @@ export default {
 
 .buy-name {
   font-size: 28rpx;
+  color: #5C4033;
   display: block;
   margin-bottom: 8rpx;
 }
@@ -291,22 +283,23 @@ export default {
 .buy-price {
   font-size: 36rpx;
   font-weight: 600;
-  color: #FF6B6B;
+  color: #FF69B4;
 }
 
 .buy-period {
   font-size: 24rpx;
-  color: #999;
+  color: #A0522D;
   font-weight: normal;
 }
 
 .buy-btn {
   width: 100%;
-  background: linear-gradient(135deg, #4A90E2, #667EE5);
-  color: white;
+  background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
+  color: #8B4513;
   padding: 20rpx;
   border-radius: 30rpx;
   text-align: center;
   font-size: 28rpx;
+  font-weight: 500;
 }
 </style>

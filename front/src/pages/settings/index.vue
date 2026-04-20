@@ -1,9 +1,5 @@
 <template>
   <view class="page">
-    <view class="nav-bar">
-      <text class="nav-title">设置</text>
-    </view>
-    
     <view class="content">
       <!-- 用户信息 -->
       <view class="user-section card">
@@ -132,17 +128,6 @@ export default {
 .page {
   min-height: 100vh;
   background: #F5F7FA;
-}
-
-.nav-bar {
-  background: white;
-  padding: 60rpx 30rpx 30rpx;
-  text-align: center;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  font-weight: 600;
 }
 
 .content {

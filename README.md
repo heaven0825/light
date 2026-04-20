@@ -90,6 +90,9 @@ cd front
 npm install
 npm run dev    # 开发模式
 npm run build  # 生产构建
+
+npm run dev:mp-weixin  # 开发模式，编译微信小程序代码
+npm run build:mp-weixin  # 生产构建，编译微信小程序代码
 ```
 
 ## 数据库表结构
@@ -127,3 +130,6 @@ npm run build  # 生产构建
 ## License
 
 MIT
+
+云托管：
+https://cloud.weixin.qq.com/cloudrun/service/light

@@ -1,84 +1,161 @@
 """
-时光记 - 用户相关API
+时光记 - 用户相关API (RESTful)
 """
-from fastapi import APIRouter, Depends, HTTPException
+import httpx
+import os
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from typing import Optional
 
 from database import get_db
 from models import User, Record
-from schemas import UserResponse, UserUpdate, UserInfo
+from schemas import UserResponse, UserUpdate, WxLoginRequest, ApiResponse
+from utils.response import success, error
 
-router = APIRouter(prefix="/api/user", tags=["用户"])
+router = APIRouter(prefix="/api", tags=["用户"])
 
 
-@router.get("/info", response_model=UserResponse)
-def get_user_info(openid: str, db: Session = Depends(get_db)):
-    """获取用户信息"""
+def get_current_user(
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db)
+) -> User:
+    """获取当前用户（从 Authorization header 获取 openid）"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="缺少认证信息")
+    
+    # Authorization: Bearer <openid>
+    if authorization.startswith("Bearer "):
+        openid = authorization[7:]
+    else:
+        openid = authorization
+    
     user = db.query(User).filter(User.openid == openid).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(status_code=401, detail="用户不存在")
+    
     return user
 
 
-@router.post("/login", response_model=UserResponse)
-def login(user_info: UserInfo, db: Session = Depends(get_db)):
+@router.post("/auth/login", response_model=ApiResponse)
+async def wx_login(login_data: WxLoginRequest, db: Session = Depends(get_db)):
     """
-    微信登录/注册
-    如果用户不存在则自动创建
+    微信小程序登录
+    POST /api/auth/login
     """
-    user = db.query(User).filter(User.openid == user_info.openid).first()
+    appid = os.getenv("WECHAT_APPID")
+    secret = os.getenv("WECHAT_SECRET")
     
+    openid = None
+    
+    if appid and secret:
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://api.weixin.qq.com/sns/jscode2session",
+                    params={
+                        "appid": appid,
+                        "secret": secret,
+                        "js_code": login_data.code,
+                        "grant_type": "authorization_code"
+                    }
+                )
+                data = response.json()
+                if "openid" in data:
+                    openid = data["openid"]
+        except Exception as e:
+            print(f"微信登录失败: {e}")
+    
+    if not openid:
+        openid = login_data.code
+    
+    # 检查或创建用户
+    user = db.query(User).filter(User.openid == openid).first()
     if not user:
-        # 创建新用户
         user = User(
-            openid=user_info.openid,
-            nickname=user_info.nickname,
-            avatar=user_info.avatar,
-            vip_type=0,  # 免费用户
-            sms_count=3  # 初始3条短信
+            openid=openid,
+            vip_type=0,
+            sms_count=3
         )
         db.add(user)
         db.commit()
         db.refresh(user)
     
-    return user
+    return success({
+        "openid": openid,
+        "token": openid,  # 简化：直接用 openid 作为 token
+        "user": {
+            "id": user.id,
+            "openid": user.openid,
+            "nickname": user.nickname,
+            "avatar": user.avatar,
+            "vip_type": user.vip_type,
+            "sms_count": user.sms_count
+        }
+    }, "登录成功")
 
 
-@router.put("/update", response_model=UserResponse)
-def update_user(openid: str, update_data: UserUpdate, db: Session = Depends(get_db)):
-    """更新用户信息"""
-    user = db.query(User).filter(User.openid == openid).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
-    
+@router.get("/user/me", response_model=ApiResponse)
+def get_user_info(current_user: User = Depends(get_current_user)):
+    """
+    获取当前用户信息
+    GET /api/user/me
+    """
+    return success({
+        "id": current_user.id,
+        "openid": current_user.openid,
+        "nickname": current_user.nickname,
+        "avatar": current_user.avatar,
+        "vip_type": current_user.vip_type,
+        "vip_expire_time": current_user.vip_expire_time,
+        "sms_count": current_user.sms_count
+    })
+
+
+@router.put("/user/me", response_model=ApiResponse)
+def update_user_info(
+    update_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    更新用户信息
+    PUT /api/user/me
+    """
     if update_data.nickname is not None:
-        user.nickname = update_data.nickname
+        current_user.nickname = update_data.nickname
     if update_data.avatar is not None:
-        user.avatar = update_data.avatar
+        current_user.avatar = update_data.avatar
     
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(current_user)
+    
+    return success({
+        "id": current_user.id,
+        "openid": current_user.openid,
+        "nickname": current_user.nickname,
+        "avatar": current_user.avatar,
+        "vip_type": current_user.vip_type,
+        "sms_count": current_user.sms_count
+    })
 
 
-@router.get("/stats")
-def get_user_stats(openid: str, db: Session = Depends(get_db)):
-    """获取用户统计数据"""
-    user = db.query(User).filter(User.openid == openid).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+@router.get("/user/stats", response_model=ApiResponse)
+def get_user_stats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    获取用户统计数据
+    GET /api/user/stats
+    """
+    record_count = db.query(Record).filter(Record.openid == current_user.openid).count()
+    limits = {0: 8, 1: 100, 2: 100}
+    limit = limits.get(current_user.vip_type, 8)
     
-    record_count = db.query(Record).filter(Record.openid == openid).count()
-    
-    # 根据会员类型确定记录上限
-    record_limit = {0: 8, 1: 100, 2: 100}
-    limit = record_limit.get(user.vip_type, 8)
-    
-    return {
+    return success({
         "record_count": record_count,
         "record_limit": limit,
-        "vip_type": user.vip_type,
-        "sms_count": user.sms_count if user.vip_type == 0 else "无限",
-        "vip_expire_time": user.vip_expire_time if user.vip_type == 1 else None
-    }
+        "vip_type": current_user.vip_type,
+        "sms_count": current_user.sms_count,
+        "vip_expire_time": current_user.vip_expire_time
+    })

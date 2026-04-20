@@ -30,12 +30,8 @@
         <textarea 
           class="text-input" 
           v-model="importText" 
-          placeholder="例如：
-0408 妈妈
-正月十五 爸爸
-1204 张三@朋友
-七月廿二 李四@同事"
-          :maxlength="-1"
+          :placeholder="placeholderText"
+          :maxlength="maxLength"
         ></textarea>
       </view>
       
@@ -67,6 +63,8 @@ export default {
     return {
       importText: '',
       defaultGroup: 1,
+      maxLength: 5000,
+      placeholderText: '例如：\n0408 妈妈\n正月十五 爸爸\n1204 张三@朋友\n七月廿二 李四@同事',
       groupOptions: [
         { label: '家人', value: 1 },
         { label: '朋友', value: 2 },

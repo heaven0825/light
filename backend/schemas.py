@@ -2,11 +2,22 @@
 时光记 - Pydantic schemas
 """
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Any
 from datetime import datetime
 
 
+# ============ 通用 ============
+class ApiResponse(BaseModel):
+    code: int = 200
+    message: str = "success"
+    data: Optional[Any] = None
+
+
 # ============ 用户相关 ============
+class WxLoginRequest(BaseModel):
+    code: str
+
+
 class UserInfo(BaseModel):
     openid: str
     nickname: Optional[str] = None
@@ -40,7 +51,7 @@ class RecordCreate(BaseModel):
     month: int
     day: int
     year: Optional[int] = None
-    remind_type: Optional[str] = None  # "1,3,7"
+    remind_type: Optional[str] = None
     sms_remind: int = 0
 
 
@@ -51,7 +62,7 @@ class RecordUpdate(BaseModel):
     date_type: Optional[int] = None
     month: Optional[int] = None
     day: Optional[int] = None
-    year: Optional[int] = None
+    year: Optional[int | str] = None  # 接受整数或空字符串
     remind_type: Optional[str] = None
     sms_remind: Optional[int] = None
 
@@ -101,10 +112,6 @@ class OrderResponse(BaseModel):
         from_attributes = True
 
 
-class OrderQuery(BaseModel):
-    order_no: str
-
-
 # ============ 短信相关 ============
 class SmsSendRequest(BaseModel):
     record_id: int
@@ -126,19 +133,12 @@ class SmsLogResponse(BaseModel):
 
 # ============ 批量导入 ============
 class BatchImportItem(BaseModel):
-    date: str  # 如 "0408" 或 "正月十五"
+    date: str
     name: str
-    type: Optional[int] = 1  # 1=生日 2=纪念日
+    type: Optional[int] = 1
     lunar: Optional[bool] = False
 
 
 class BatchImportRequest(BaseModel):
     items: List[BatchImportItem]
     group_type: int = 1
-
-
-# ============ 通用响应 ============
-class ApiResponse(BaseModel):
-    code: int = 0
-    msg: str = "success"
-    data: Optional[dict] = None

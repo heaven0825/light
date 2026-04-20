@@ -3,6 +3,8 @@
   适用于 MySQL 5.7 / 8.0
 */
 
+USE light_memory;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 

@@ -1,0 +1,142 @@
+
+.page.data-v-97d9768f {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFF8F9 0%, #FFF0F5 100%);
+}
+.content.data-v-97d9768f {
+  padding: 24rpx;
+}
+.current-vip.data-v-97d9768f, .free-user.data-v-97d9768f {
+  background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
+  border-radius: 20rpx;
+  padding: 40rpx;
+  text-align: center;
+  color: #8B4513;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 183, 193, 0.3);
+}
+.vip-badge.data-v-97d9768f {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+.vip-icon.data-v-97d9768f {
+  font-size: 48rpx;
+}
+.vip-name.data-v-97d9768f {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.vip-expire.data-v-97d9768f, .vip-permanent.data-v-97d9768f {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+.free-user.data-v-97d9768f {
+  background: linear-gradient(135deg, #FFE4E8, #FFF0F3);
+}
+.free-icon.data-v-97d9768f {
+  font-size: 60rpx;
+  display: block;
+  margin-bottom: 12rpx;
+}
+.free-text.data-v-97d9768f {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #A0522D;
+}
+.free-hint.data-v-97d9768f {
+  font-size: 24rpx;
+  color: #A0522D;
+  opacity: 0.8;
+  display: block;
+  margin-top: 8rpx;
+}
+.compare-section.data-v-97d9768f {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+.section-title.data-v-97d9768f {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #5C4033;
+  margin-bottom: 24rpx;
+}
+.compare-table.data-v-97d9768f {
+  font-size: 24rpx;
+}
+.compare-row.data-v-97d9768f {
+  display: flex;
+  border-bottom: 1rpx solid #FFE4E8;
+  padding: 20rpx 0;
+}
+.compare-row.header.data-v-97d9768f {
+  background: #FFF8F9;
+  border-radius: 8rpx;
+  font-weight: 600;
+  color: #8B4513;
+}
+.compare-col.data-v-97d9768f {
+  flex: 1;
+  text-align: center;
+  color: #5C4033;
+}
+.buy-section.data-v-97d9768f {
+  display: flex;
+  gap: 20rpx;
+}
+.buy-card.data-v-97d9768f {
+  flex: 1;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  position: relative;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+.buy-card.recommended.data-v-97d9768f {
+  border: 2rpx solid #FFB6C1;
+}
+.recommended-tag.data-v-97d9768f {
+  position: absolute;
+  top: -10rpx;
+  right: 20rpx;
+  background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+  color: white;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+}
+.buy-info.data-v-97d9768f {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+.buy-name.data-v-97d9768f {
+  font-size: 28rpx;
+  color: #5C4033;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.buy-price.data-v-97d9768f {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #FF69B4;
+}
+.buy-period.data-v-97d9768f {
+  font-size: 24rpx;
+  color: #A0522D;
+  font-weight: normal;
+}
+.buy-btn.data-v-97d9768f {
+  width: 100%;
+  background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
+  color: #8B4513;
+  padding: 20rpx;
+  border-radius: 30rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 500;
+}

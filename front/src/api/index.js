@@ -1,62 +1,66 @@
 /**
- * 时光记 - API 配置与请求封装
+ * 时光记 - API 配置与请求封装 (RESTful)
  */
 
 const API_BASE_URL = 'http://localhost:8000';
 
-// 存储
 const STORAGE_KEYS = {
-  OPENID: 'light_openid',
-  USER_INFO: 'light_user_info',
-  TOKEN: 'light_token'
+  OPENID: 'openid',
+  TOKEN: 'token',
+  USER_INFO: 'user_info'
 };
 
+// 获取 token
+function getToken() {
+  return uni.getStorageSync(STORAGE_KEYS.TOKEN) || '';
+}
+
 // 获取 openid
-export function getOpenId() {
+function getOpenId() {
   return uni.getStorageSync(STORAGE_KEYS.OPENID) || '';
 }
 
-// 保存用户信息
-export function setUserInfo(info) {
-  uni.setStorageSync(STORAGE_KEYS.USER_INFO, info);
+// 保存登录信息
+function setLoginInfo(data) {
+  uni.setStorageSync(STORAGE_KEYS.TOKEN, data.token);
+  uni.setStorageSync(STORAGE_KEYS.OPENID, data.openid);
+  uni.setStorageSync(STORAGE_KEYS.USER_INFO, data.user);
 }
 
 // 获取用户信息
-export function getUserInfo() {
+function getUserInfo() {
   return uni.getStorageSync(STORAGE_KEYS.USER_INFO) || null;
 }
 
 // 请求封装
-async function request(url, method = 'GET', data = {}, params = {}) {
-  const openid = getOpenId();
-  
-  // 构建 URL 参数
-  const queryParams = { openid, ...params };
-  const queryString = Object.entries(queryParams)
-    .filter(([_, v]) => v !== undefined && v !== null && v !== '')
-    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-    .join('&');
-  
-  const fullUrl = `${API_BASE_URL}${url}${queryString ? '?' + queryString : ''}`;
+async function request(url, method = 'GET', data = {}) {
+  const token = getToken();
   
   return new Promise((resolve, reject) => {
     uni.request({
-      url: fullUrl,
+      url: `${API_BASE_URL}${url}`,
       method,
       data,
       header: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
       },
       success: (res) => {
         if (res.statusCode === 200) {
-          resolve(res.data);
+          const response = res.data;
+          // RESTful 统一响应格式
+          if (response.code === 200) {
+            resolve(response.data);
+          } else {
+            uni.showToast({ title: response.message || '请求失败', icon: 'none' });
+            reject(response);
+          }
         } else if (res.statusCode === 401) {
           uni.showToast({ title: '请先登录', icon: 'none' });
-          reject(res.data);
-        } else if (res.statusCode === 400) {
-          uni.showToast({ title: res.data.detail || '请求失败', icon: 'none' });
+          uni.removeStorageSync(STORAGE_KEYS.TOKEN);
           reject(res.data);
         } else {
+          uni.showToast({ title: res.data.message || '请求失败', icon: 'none' });
           reject(res.data);
         }
       },
@@ -70,16 +74,24 @@ async function request(url, method = 'GET', data = {}, params = {}) {
 
 // ============ API 接口 ============
 
+// 认证相关
+export const authApi = {
+  // 微信登录
+  login: (code) => {
+    return request('/api/auth/login', 'POST', { code });
+  }
+};
+
 // 用户相关
 export const userApi = {
-  // 登录
-  login: (openid, nickname, avatar) => {
-    return request('/api/user/login', 'POST', { openid, nickname, avatar });
+  // 获取当前用户信息
+  getInfo: () => {
+    return request('/api/user/me');
   },
   
-  // 获取用户信息
-  getInfo: () => {
-    return request('/api/user/info');
+  // 更新用户信息
+  updateInfo: (data) => {
+    return request('/api/user/me', 'PUT', data);
   },
   
   // 获取用户统计
@@ -92,12 +104,7 @@ export const userApi = {
 export const recordApi = {
   // 获取记录列表
   getList: (params = {}) => {
-    return request('/api/records/', 'GET', {}, params);
-  },
-  
-  // 获取即将到来的记录
-  getUpcoming: (days = 7) => {
-    return request('/api/records/upcoming', 'GET', {}, { days });
+    return request('/api/records/', 'GET', params);
   },
   
   // 获取单条记录
@@ -122,7 +129,7 @@ export const recordApi = {
   
   // 批量导入
   batchImport: (items, groupType = 1) => {
-    return request('/api/records/batch_import', 'POST', { items, group_type: groupType });
+    return request('/api/records/batch', 'POST', { items, group_type: groupType });
   }
 };
 
@@ -130,7 +137,7 @@ export const recordApi = {
 export const blessingApi = {
   // 获取祝福语列表
   getList: (groupType) => {
-    return request('/api/blessings/', 'GET', {}, { group_type: groupType });
+    return request('/api/blessings/', 'GET', { group_type: groupType });
   },
   
   // 获取所有祝福语
@@ -143,17 +150,17 @@ export const blessingApi = {
 export const orderApi = {
   // 创建订单
   create: (payType) => {
-    return request('/api/order/create', 'POST', { pay_type: payType });
+    return request('/api/orders/', 'POST', { pay_type: payType });
   },
   
   // 获取订单列表
   getList: () => {
-    return request('/api/order/list', 'GET');
+    return request('/api/orders/', 'GET');
   },
   
-  // 查询订单状态
-  query: (orderNo) => {
-    return request('/api/order/query', 'POST', { order_no: orderNo });
+  // 模拟支付
+  pay: (orderNo) => {
+    return request('/api/orders/pay', 'POST', { order_no: orderNo });
   }
 };
 
@@ -166,7 +173,7 @@ export const smsApi = {
   
   // 获取发送记录
   getLogs: (limit = 20) => {
-    return request('/api/sms/logs', 'GET', {}, { limit });
+    return request('/api/sms/logs', 'GET', { limit });
   },
   
   // 获取剩余条数
@@ -175,13 +182,23 @@ export const smsApi = {
   }
 };
 
+// 日期相关
+export const dateApi = {
+  // 获取当前日期信息（包含农历）
+  getNow: () => {
+    return request('/api/date/now', 'GET');
+  }
+};
+
 export default {
   getOpenId,
-  setUserInfo,
   getUserInfo,
+  setLoginInfo,
+  authApi,
   userApi,
   recordApi,
   blessingApi,
   orderApi,
-  smsApi
+  smsApi,
+  dateApi
 };

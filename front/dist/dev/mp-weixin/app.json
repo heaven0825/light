@@ -1,0 +1,57 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/add/index",
+    "pages/detail/index",
+    "pages/member/index",
+    "pages/settings/index",
+    "pages/sms/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "时光记",
+    "navigationBarBackgroundColor": "#FFB6C1",
+    "backgroundColor": "#FFF8F9"
+  },
+  "tabBar": {
+    "color": "#A0522D",
+    "selectedColor": "#FF69B4",
+    "backgroundColor": "#FFFDFE",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/static/tab-home.png",
+        "selectedIconPath": "/static/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/add/index",
+        "text": "添加",
+        "iconPath": "/static/tab-add.png",
+        "selectedIconPath": "/static/tab-add-active.png"
+      },
+      {
+        "pagePath": "pages/member/index",
+        "text": "会员",
+        "iconPath": "/static/tab-member.png",
+        "selectedIconPath": "/static/tab-member-active.png"
+      },
+      {
+        "pagePath": "pages/settings/index",
+        "text": "设置",
+        "iconPath": "/static/tab-settings.png",
+        "selectedIconPath": "/static/tab-settings-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序定位"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseAddress"
+  ],
+  "usingComponents": {}
+}

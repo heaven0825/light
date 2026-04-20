@@ -8,7 +8,7 @@ from datetime import datetime
 import logging
 
 from database import engine, Base, SessionLocal
-from routers import user, record, blessing, order, sms
+from routers import user, record, blessing, order, sms, date
 from tasks import check_reminders, check_vip_expire
 
 # 配置日志
@@ -40,6 +40,7 @@ app.include_router(record.router)
 app.include_router(blessing.router)
 app.include_router(order.router)
 app.include_router(sms.router)
+app.include_router(date.router)
 
 
 # 健康检查
